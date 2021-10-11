@@ -2,9 +2,9 @@
 
 # Overview
 
-**Rerun** allows the user to record and play back activities from a VR scene. It is built on top of the Ultimate Replay 2.0 (**UR**) asset from Unity's Asset Store.
+**Rerun** allows the user to record and play back activities from a VR scene. It is built on top of the [Ultimate Replay 2.0](https://assetstore.unity.com/packages/tools/camera/ultimate-replay-2-0-178602) (**UR**) asset from Unity's Asset Store.
 
-This repository is meant to be used as **a git submodule inside the Assets folder of a Unity Project**. See the Rerun Sample Project as an example of how Rerun can be used.
+This repository is meant to be used as **a git submodule inside the Assets folder of a Unity Project**. See the [Rerun Sample Project](https://github.com/FAR-Lab/Rerun-Sample-Project) as an example of how Rerun can be used within a project.
 
 Extending Rerun requires knowledge of UR. See UR's user guide and samples for more information.
 
@@ -13,8 +13,8 @@ Extending Rerun requires knowledge of UR. See UR's user guide and samples for mo
 1. Do one of the following:
     * Add this repository as a git submodule in your Unity project, inside the Assets folder. 
     * Or, clone this repository and copy into your Assets folder.
-3. Install the required packages and assets, see _Requirements_ below.
-4. Follow the _Workflow_ instructions below for integrating Rerun into your project
+2. Install the required packages and assets, see _Requirements_ below.
+3. Follow the _Workflow_ instructions below for integrating Rerun into your project
 
 # Requirements
 
@@ -48,14 +48,18 @@ To use Rerun in your scene:
 
 You should now be able to record and play using the controls as indicated on the screen.
 
-# References
-The prefabs inside Prefabs/Main are most likely the only ones you will bring into your scene.
+For recording additional objects in your scene, follow UR's user guide and documentation.
 
-## RerunManager
+# References
+You will use the following prefabs inside Prefabs/Main 
+
+## RerunManager (prefab)
 RerunManager has public methods that can used to control recoring and playback through code.
 The use of Begin and Stop is to match with Ultimate Replay API.
 
-### Public methods
+### RerunManager (script)
+
+#### Public methods
 - `BeginRecording()`
 - `StopRecording()`
 - `ToggleRecording()` : Toggles the recording mode. If using a single input source for both begin/stop recording, then use this.
@@ -63,11 +67,11 @@ The use of Begin and Stop is to match with Ultimate Replay API.
 - `Live()` : Regular live mode. Only works if not recording.
 - `Open()` : Open a file dialog for loading a .replay file. Only works if not recording.
 
-### Properties
+#### Properties
 - `recordingPrefix` : String prefix for file name. Use inspector, or property to set programmatically. For example, use to store session ID, user name, scene name etc., in the file name.
 - `infoString` : String that contains information about active mode, name of file being recorded/played etc. Read only.
 
-## RerunGUI
+### RerunGUI
 The RerunGUI prefab provides convenient recording and playback controls. It uses Unity's IMGUI which means that it doesn't show up in the view of the VR
 The RerunGUI prefab provides convenient recording and playback controls:
 - R: Start/stop recording
@@ -79,11 +83,11 @@ During recording, the user must stop recording before switching modes
 
 The playback 
 
-## RerunOVRCameraRig
+## RerunOVRCameraRig (prefab)
 This prefab replaces the regular OVRCameraRig, for hand tracking. It has UR recording components on multiple game objects in the rig hierarchy, for recording the head pose and handtracking data.
 
-
-
+## RerunPlaybackCameraRig (prefab)
+[Add text]
 # Samples
 
 Sample scenes can be found within the Scenes folder. Currently the following samples are available:
@@ -91,6 +95,6 @@ Sample scenes can be found within the Scenes folder. Currently the following sam
 ## Simple VR
 This sample shows how to use the main prefabs to record headpose and handtracking data, with keyboard recording controls and graphical overlay using RerunGUI.
 
-See the Rerun Sample Project for a ready-to-use project.
+See the  [Rerun Sample Project](https://github.com/FAR-Lab/Rerun-Sample-Project) for a ready-to-use project.
 
 
