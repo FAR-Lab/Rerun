@@ -8,6 +8,8 @@ This repository is meant to be used as **a git submodule inside the Assets folde
 
 Extending Rerun requires knowledge of UR. See UR's user guide and samples for more information.
 
+See a video of an earlier version of Rerun [here](https://drive.google.com/file/d/14I3H60u8w3ewDkKpN1TuqM-na5cMjiOR/view?usp=sharing).
+
 # Installation instructions
 
 1. Do one of the following:
