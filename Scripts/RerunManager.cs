@@ -25,7 +25,13 @@ namespace Rerun
 
         // TODO - Create editor / inspector script for this
         [SerializeField]
-        private string m_SessionIdentifier = "";
+        private string m_RecordingPrefix = "";
+
+        public string recordingPrefix
+        {
+            get => m_RecordingPrefix;
+            set => m_RecordingPrefix = value;
+        }
 
         // This example assumes that a replay object has been assigned for recording
         [SerializeField]
@@ -177,7 +183,7 @@ namespace Rerun
 
             if (m_RecordToFile)
             {
-                string fileName = m_SessionIdentifier + "_Rerun_" +
+                string fileName = m_RecordingPrefix + "_Rerun_" +
                                   System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
                 m_FileTarget = ReplayFileTarget.CreateReplayFile(Application.persistentDataPath + "/" + fileName);
 
