@@ -1,0 +1,210 @@
+fileFormatVersion: 2
+guid: e2915a14bfa1bb24d975516318f61170
+ModelImporter:
+  serializedVersion: 20200
+  internalIDToNameTable:
+  - first:
+      74: -7466152023725633907
+    second: AvatarRoot|allGrip_L_AvatarRoot
+  - first:
+      74: -400384514629747593
+    second: AvatarRoot|allGrip_L_AvatarRoot.001
+  - first:
+      74: -2695272562310179993
+    second: AvatarRoot|allGrip_R_AvatarRoot
+  - first:
+      74: 5535600524591766679
+    second: AvatarRoot|allGrip_R_AvatarRoot.001
+  - first:
+      74: 907129596211082655
+    second: AvatarRoot|allOpen_L_AvatarRoot
+  - first:
+      74: -9237767350264083
+    second: AvatarRoot|allOpen_L_AvatarRoot.001
+  - first:
+      74: -1295229322586089242
+    second: AvatarRoot|allOpen_R_AvatarRoot
+  - first:
+      74: -8600946864289029891
+    second: AvatarRoot|allOpen_R_AvatarRoot.001
+  - first:
+      74: -7456079925728258852
+    second: AvatarRoot|idle_eyes_2_AvatarRoot
+  - first:
+      74: -2435009169478692924
+    second: AvatarRoot|idle_eyes_2_AvatarRoot.001
+  - first:
+      74: -6897897978819257962
+    second: AvatarRoot|idle_eyes_AvatarRoot
+  - first:
+      74: 7293555668886135467
+    second: AvatarRoot|idle_eyes_AvatarRoot.001
+  - first:
+      74: -8347116135536156625
+    second: AvatarRoot|indexDown_L_AvatarRoot
+  - first:
+      74: 5767671260284157079
+    second: AvatarRoot|indexDown_L_AvatarRoot.001
+  - first:
+      74: -677965515126814988
+    second: AvatarRoot|indexDown_R_AvatarRoot
+  - first:
+      74: 5857250679421981839
+    second: AvatarRoot|indexDown_R_AvatarRoot.001
+  - first:
+      74: 5909226056575261689
+    second: AvatarRoot|mrpDown_L_AvatarRoot
+  - first:
+      74: 971921982070946845
+    second: AvatarRoot|mrpDown_L_AvatarRoot.001
+  - first:
+      74: 7901508822301953596
+    second: AvatarRoot|mrpDown_R_AvatarRoot
+  - first:
+      74: 8632141689508138525
+    second: AvatarRoot|mrpDown_R_AvatarRoot.001
+  - first:
+      74: 1160492654421342575
+    second: AvatarRoot|pinch_L_AvatarRoot
+  - first:
+      74: -9027278081077108564
+    second: AvatarRoot|pinch_L_AvatarRoot.001
+  - first:
+      74: -6247976305002952314
+    second: AvatarRoot|pinch_R_AvatarRoot
+  - first:
+      74: -2988285369653486162
+    second: AvatarRoot|pinch_R_AvatarRoot.001
+  - first:
+      74: 9178499716226197272
+    second: AvatarRoot|point_L_AvatarRoot
+  - first:
+      74: 3789917871745178296
+    second: AvatarRoot|point_L_AvatarRoot.001
+  - first:
+      74: 6970136738969988828
+    second: AvatarRoot|point_R_AvatarRoot
+  - first:
+      74: -3369050772746627123
+    second: AvatarRoot|point_R_AvatarRoot.001
+  - first:
+      74: 206933182112860077
+    second: AvatarRoot|thumbDown_L_AvatarRoot
+  - first:
+      74: 7906693519314302124
+    second: AvatarRoot|thumbDown_L_AvatarRoot.001
+  - first:
+      74: -5848026896227268302
+    second: AvatarRoot|thumbDown_R_AvatarRoot
+  - first:
+      74: -138117077577229793
+    second: AvatarRoot|thumbDown_R_AvatarRoot.001
+  - first:
+      74: -8195902464365312305
+    second: AvatarRoot|thumbsUp_L_AvatarRoot
+  - first:
+      74: -5693978611585328148
+    second: AvatarRoot|thumbsUp_L_AvatarRoot.001
+  - first:
+      74: -8770370933076650918
+    second: AvatarRoot|thumbsUp_R_AvatarRoot
+  - first:
+      74: -220427630500360867
+    second: AvatarRoot|thumbsUp_R_AvatarRoot.001
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

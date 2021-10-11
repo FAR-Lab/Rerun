@@ -1,0 +1,90 @@
+{
+    "name": "RerunInputActions",
+    "maps": [
+        {
+            "name": "rerun",
+            "id": "e0d663bf-31bb-485a-9a77-daf7332ad1c0",
+            "actions": [
+                {
+                    "name": "record",
+                    "type": "Button",
+                    "id": "6be34198-bc49-428e-b9a7-0b8b6172fb8a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "open",
+                    "type": "Button",
+                    "id": "a903ab5c-f91d-4e4b-9bc6-24ca5463aff4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "play",
+                    "type": "Button",
+                    "id": "959406aa-99d5-485f-b037-deaaa75bb9b9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "live",
+                    "type": "Button",
+                    "id": "1815521d-500a-4454-aefd-5d803ba2300f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fb72088a-8400-49a8-8067-f4f2d83a2a9f",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "record",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5d70537-0ee4-4ee2-9e34-102bab0591da",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "open",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7345099-62e2-41fa-a1ea-063d722ee817",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "play",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "264265ff-6237-4729-a839-ad9d1757dd3d",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "live",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
