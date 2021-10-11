@@ -23,10 +23,12 @@ namespace Rerun
         // Turning serialization off for safety
         private bool m_RecordToFile = true;
 
-        // TODO - Create editor / inspector script for this
+        // String prefix for file name. Use inspector, or property to set programmatically
+        // For example, use to store session ID, user name, scene name etc., in the file name
+        // TODO - Store information like this in the recording itself, or JSON
         [SerializeField]
         private string m_RecordingPrefix = "";
-
+        
         public string recordingPrefix
         {
             get => m_RecordingPrefix;
@@ -41,6 +43,7 @@ namespace Rerun
         [SerializeField]
         private ReplayObject m_RigClone;
 
+        // String that contains information about active mode, name of file being recorded/played etc.
         private string m_InfoString;
 
         public string infoString
