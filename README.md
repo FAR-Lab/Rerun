@@ -53,8 +53,19 @@ The prefabs inside Prefabs/Main are most likely the only ones you will bring int
 
 ## RerunManager
 RerunManager has public methods that can used to control recoring and playback through code.
+The use of Begin and Stop is to match with Ultimate Replay API.
 
-`ToggleRecording()` can be used if same button...
+### Public methods
+- `BeginRecording()`
+- `StopRecording()`
+- `ToggleRecording()` : Toggles the recording mode. If using a single input source for both begin/stop recording, then use this.
+- `Play()` : Plays the currently loaeded recording. Only works if not recording.
+- `Live()` : Regular live mode. Only works if not recording.
+- `Open()` : Open a file dialog for loading a .replay file. Only works if not recording.
+
+### Properties
+- `recordingPrefix` : String prefix for file name. Use inspector, or property to set programmatically. For example, use to store session ID, user name, scene name etc., in the file name.
+- `infoString` : String that contains information about active mode, name of file being recorded/played etc. Read only.
 
 ## RerunGUI
 The RerunGUI prefab provides convenient recording and playback controls. It uses Unity's IMGUI which means that it doesn't show up in the view of the VR
