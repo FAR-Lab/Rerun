@@ -134,8 +134,12 @@ namespace Rerun
             {
                 return;
             }
-
+            
+#if UNITY_EDITOR
             var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
+#else
+            var filePath = "";
+#endif
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
             Play();
         }
