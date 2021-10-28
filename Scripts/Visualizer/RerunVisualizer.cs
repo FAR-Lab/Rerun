@@ -180,9 +180,6 @@ namespace Rerun
                                     positions_1.Add(transformSerializer.Position);
                                     rotations_1.Add(transformSerializer.Rotation);
                                 }
-
-                                
-
                             }
                         }
                         go.GetComponent<LineRenderer>().positionCount = positions.Count;
