@@ -1,4 +1,5 @@
-﻿using UltimateReplay.Storage;
+﻿using System;
+using UltimateReplay.Storage;
 using UnityEngine;
 using UltimateReplay;
 using UnityEditor;
@@ -45,6 +46,9 @@ namespace Rerun
 
         // String that contains information about active mode, name of file being recorded/played etc.
         private string m_InfoString;
+        
+        private ReplayScene m_RecordScene = null;
+        private ReplayScene m_PlaybackScene = null;
 
         public string infoString
         {
@@ -58,6 +62,13 @@ namespace Rerun
             m_RerunPlaybackCameraManager = GetComponent<RerunPlaybackCameraManager>();
 
             m_InfoString = "";
+        }
+
+        private void Start()
+        {
+            // Create a recordable scene containg the player car only
+            m_RecordScene = new ReplayScene(m_RigSource);
+            m_PlaybackScene = new ReplayScene(m_RigClone);
         }
 
         public void Live()
@@ -116,13 +127,15 @@ namespace Rerun
             // Begin playback, based on target
             if (m_RecordToFile)
             {
-                m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, null, true);
+                //m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, null, true);
+                m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, m_PlaybackScene, true);
                 string[] filePath = m_FileTarget.FilePath.Split('/');
                 m_InfoString = "Playing file: " + filePath[filePath.Length - 1];
             }
             else
             {
-                m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
+                //m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
+                m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, m_PlaybackScene, true);
                 m_InfoString = "Playing from memory";
             }
         }
