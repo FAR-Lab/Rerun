@@ -158,6 +158,46 @@ namespace Rerun
             m_RerunPlaybackCameraManager.DisableCameras();
         }
         
+        public void PausePlayback()
+        {
+            // If recording then do nothing (recording must be stopped first)
+            if (ReplayManager.IsRecording(m_RecordHandle))
+            {
+                return;
+            }
+            
+            // If not playing then do nothing
+            if (!ReplayManager.IsReplaying(m_PlaybackHandle))
+            {
+                return;
+            }
+            
+            ReplayManager.PausePlayback(m_PlaybackHandle);
+            m_RigClone.gameObject.SetActive(true);
+            //m_RigSource.gameObject.SetActive(false);
+            
+        }
+        
+        public void ResumePlayback()
+        {
+            // If recording then do nothing (recording must be stopped first)
+            if (ReplayManager.IsRecording(m_RecordHandle))
+            {
+                return;
+            }
+            
+            // If not playing then do nothing
+            // if (!ReplayManager.IsReplaying(m_PlaybackHandle))
+            // {
+            //     return;
+            // }
+            
+            ReplayManager.ResumePlayback(m_PlaybackHandle);
+            m_RigClone.gameObject.SetActive(true);
+            //m_RigSource.gameObject.SetActive(false);
+            
+        }
+        
         public void StopRecording()
         {
             // If not recording then do nothing

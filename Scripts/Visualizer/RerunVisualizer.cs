@@ -17,22 +17,23 @@ namespace Rerun
         [SerializeField]
         private RerunManager m_RerunManager;
 
+        // Number of samples used for visualization
         [SerializeField]
         private float m_Samples = 20f;
 
+        // Objects to be visualized
         [SerializeField]
         private List<GameObject> m_ReplayTransformObjects;
 
         private float m_NormalizedTime = 0;
-
-        private List<Transform> m_Transforms;
         
-        List<Vector3> positions_0;
-        List<Vector3> positions_1;
-        List<Quaternion> rotations_0;
-        List<Quaternion> rotations_1;
+        
+        List<Vector3> m_Positions0;
+        List<Vector3> m_Positions1;
+        List<Quaternion> m_Rotations0;
+        List<Quaternion> m_Rotations1;
 
-        private List<float> dotProducts_0;
+        private List<float> m_DotProducts0;
 
         
         public float normalizedTime
@@ -42,55 +43,64 @@ namespace Rerun
 
         public List<float> GetDotProduct()
         {
-            return dotProducts_0;
+            return m_DotProducts0;
         }
 
         // Start is called before the first frame update
         void Start()
         {
             //InitObjects();
-            m_Transforms = new List<Transform>();
-            
-            positions_0 = new List<Vector3>();
-            positions_1 = new List<Vector3>();
-            rotations_0 = new List<Quaternion>();
-            rotations_1 = new List<Quaternion>();
 
-            dotProducts_0 = new List<float>();
+            m_Positions0 = new List<Vector3>();
+            m_Positions1 = new List<Vector3>();
+            m_Rotations0 = new List<Quaternion>();
+            m_Rotations1 = new List<Quaternion>();
+
+            m_DotProducts0 = new List<float>();
             
         }
 
         private void Update()
         {
-            ReplayHandle handle = m_RerunManager.playbackHandle;
-            ReplayStorageTarget target = ReplayManager.GetReplayStorageTarget(handle);
-            float duration = target.Duration;
-            float step = duration / m_Samples;
-                
-            // Get the playback time
-            ReplayTime playbackTime = ReplayManager.GetPlaybackTime(handle);
-            float time = playbackTime.NormalizedTime;
-                
-            m_NormalizedTime = playbackTime.NormalizedTime;
+            if (ReplayManager.IsReplayingAny)
+            {
+                ReplayHandle handle = m_RerunManager.playbackHandle;
+                ReplayStorageTarget target = ReplayManager.GetReplayStorageTarget(handle);
+                float duration = target.Duration;
+                float step = duration / m_Samples;
+
+                // Get the playback time
+                ReplayTime playbackTime = ReplayManager.GetPlaybackTime(handle);
+                m_NormalizedTime = playbackTime.NormalizedTime;
+            }
         }
 
         private void InitObjects()
         {
+            m_Positions0.Clear();
+            m_Positions1.Clear();
+            m_Rotations0.Clear();
+            m_Rotations1.Clear();
+            
             // Add LineRenderer to each object to be visualized
             foreach (var go in m_ReplayTransformObjects)
             {
-                var lr = go.AddComponent<LineRenderer>();
+                LineRenderer lr = go.GetComponent<LineRenderer>();
+                if (lr== null)
+                {
+                    lr = go.AddComponent<LineRenderer>();    
+                };
+                
                 //var lr = go.AddComponent<TrailRenderer>();
-                lr.material = new Material(Shader.Find("Sprites/Default"));
+                lr.material = new Material(Shader.Find("Unlit/Color"));
+                lr.material.color = Color.blue;
                 lr.positionCount = 0;
                 lr.startWidth = 0.01f;
                 lr.endWidth = 0.01f;
                 Color c1 = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1);
                 Color c2 = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1);
                 
-                lr.SetColors(c1, c1);
-                // lr.startColor = c1;
-                // lr.endColor = c2;
+                lr.SetColors(c1, c2);
             }
         }
 
@@ -111,8 +121,8 @@ namespace Rerun
                 float step = duration / m_Samples;
                 
                 // Get the playback time
-                ReplayTime playbackTime = ReplayManager.GetPlaybackTime(handle);
-                float time = playbackTime.NormalizedTime;
+                // ReplayTime playbackTime = ReplayManager.GetPlaybackTime(handle);
+                // float time = playbackTime.NormalizedTime;
                 
 //                m_NormalizedTime = playbackTime.NormalizedTime;
 
@@ -164,21 +174,21 @@ namespace Rerun
                                 data.ComponentStateData.PrepareForRead();
                                 transformSerializer.OnReplayDeserialize(data.ComponentStateData);
 
-                                Debug.Log("Position: " + transformSerializer.Position);
-                                Debug.Log("Rotation: " + transformSerializer.Rotation);
-                                Debug.Log("Scale: " + transformSerializer.Scale);
+                                // Debug.Log("Position: " + transformSerializer.Position);
+                                // Debug.Log("Rotation: " + transformSerializer.Rotation);
+                                // Debug.Log("Scale: " + transformSerializer.Scale);
 
                                 positions.Add(transformSerializer.Position);
 
                                 if (counter == 0)
                                 {
-                                    positions_0.Add(transformSerializer.Position);
-                                    rotations_0.Add(transformSerializer.Rotation);
+                                    m_Positions0.Add(transformSerializer.Position);
+                                    m_Rotations0.Add(transformSerializer.Rotation);
                                 }
                                 if (counter == 1)
                                 {
-                                    positions_1.Add(transformSerializer.Position);
-                                    rotations_1.Add(transformSerializer.Rotation);
+                                    m_Positions1.Add(transformSerializer.Position);
+                                    m_Rotations1.Add(transformSerializer.Rotation);
                                 }
                             }
                         }
@@ -188,12 +198,12 @@ namespace Rerun
                     counter++;
                 }
 
-                dotProducts_0.Clear();
-                for (int i = 0; i < positions_0.Count; i++)
+                m_DotProducts0.Clear();
+                for (int i = 0; i < m_Positions0.Count; i++)
                 {
-                    Vector3 fwd_0 = (rotations_0[i] * Vector3.forward).normalized;
-                    Vector3 fwd_1 = (rotations_1[i] * Vector3.forward).normalized;
-                    dotProducts_0.Add(Vector3.Dot((positions_1[i] - positions_0[i]).normalized, fwd_0));
+                    Vector3 fwd_0 = (m_Rotations0[i] * Vector3.forward).normalized;
+                    Vector3 fwd_1 = (m_Rotations1[i] * Vector3.forward).normalized;
+                    m_DotProducts0.Add(Vector3.Dot((m_Positions1[i] - m_Positions0[i]).normalized, fwd_0));
                 }
             }
         }

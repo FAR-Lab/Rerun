@@ -20,7 +20,7 @@ namespace Rerun
         private readonly Color m_Normal = new Color(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color m_Highlight = Color.green;
         private readonly Color m_HighlightRecording = Color.red;
-        private readonly Color s_FontHighlight = Color.white;
+        //private readonly Color s_FpauseontHighsdflight = Color.white;
 
         private ReplayHandle m_RecordHandle = ReplayHandle.invalid;
         private ReplayHandle m_PlaybackHandle = ReplayHandle.invalid;
@@ -200,7 +200,8 @@ namespace Rerun
                                     GUILayout.Height(m_PlayPauseHeight)) == true)
                             {
                                 // Resume the replay
-                                ReplayManager.ResumePlayback(m_PlaybackHandle);
+                                //ReplayManager.ResumePlayback(m_PlaybackHandle);
+                                m_RerunManager.ResumePlayback();
                             }
                         }
                         else
@@ -210,7 +211,8 @@ namespace Rerun
                                     GUILayout.Height(m_PlayPauseHeight)) == true)
                             {
                                 // Pause playback
-                                ReplayManager.PausePlayback(m_PlaybackHandle);
+                                //ReplayManager.PausePlayback(m_PlaybackHandle);
+                                m_RerunManager.PausePlayback();
                             }
                         }
 
