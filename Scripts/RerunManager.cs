@@ -49,6 +49,7 @@ namespace Rerun
         
         private ReplayScene m_RecordScene = null;
         private ReplayScene m_PlaybackScene = null;
+        private ReplayHandle m_PlaybackHandleClone = ReplayHandle.invalid;
 
         public string infoString
         {
@@ -67,8 +68,13 @@ namespace Rerun
         private void Start()
         {
             // Create a recordable scene containg the player car only
-            m_RecordScene = new ReplayScene(m_RigSource);
+            //ReplayManager.AddReplayObjectToRecordScenes(ReplayManager.Find);
+            
+            m_RecordScene = new ReplayScene();
+            //m_RecordScene = new ReplayScene();
+            //m_PlaybackScene = new ReplayScene(m_RigClone);
             m_PlaybackScene = new ReplayScene(m_RigClone);
+
         }
 
         public void Live()
@@ -127,15 +133,15 @@ namespace Rerun
             // Begin playback, based on target
             if (m_RecordToFile)
             {
-                //m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, null, true);
-                m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, m_PlaybackScene, true);
+                m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, null, true);
+                //m_PlaybackHandleClone = ReplayManager.BeginPlayback(m_FileTarget, m_PlaybackScene, true);
                 string[] filePath = m_FileTarget.FilePath.Split('/');
                 m_InfoString = "Playing file: " + filePath[filePath.Length - 1];
             }
             else
             {
-                //m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
-                m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, m_PlaybackScene, true);
+                m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
+                //m_PlaybackHandleClone = ReplayManager.BeginPlayback(m_MemoryTarget, m_PlaybackScene, true);
                 m_InfoString = "Playing from memory";
             }
         }
@@ -249,6 +255,7 @@ namespace Rerun
                 }
 
                 m_RecordHandle = ReplayManager.BeginRecording(m_FileTarget, null, false, true);
+                //m_RecordHandle = ReplayManager.BeginRecording(m_FileTarget, m_RecordScene, false, true);
                 m_InfoString = "Recording file: " + fileName;
             }
             else
@@ -260,6 +267,7 @@ namespace Rerun
                 }
 
                 m_RecordHandle = ReplayManager.BeginRecording(m_MemoryTarget, null, false, true);
+                //m_RecordHandle = ReplayManager.BeginRecording(m_MemoryTarget, m_RecordScene, false, true);
                 m_InfoString = "Recording into memory";
             }
         }
