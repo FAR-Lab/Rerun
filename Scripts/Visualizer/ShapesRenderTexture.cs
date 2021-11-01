@@ -29,6 +29,7 @@ namespace Rerun
         
         private List<float> m_DotProducts;
 
+        private PolylinePath m_Path;
         void Awake()
         {
             // Create an RT
@@ -61,6 +62,11 @@ namespace Rerun
             dots = rv.GetDotProduct();
             m_DotProducts = rv.GetDotProduct();
 
+        }
+
+        public void UpdatePolylinePath()
+        {
+            
         }
 
         public override void DrawShapes(Camera cam)
@@ -98,9 +104,25 @@ namespace Rerun
                 float end = 2;
                 //Draw.Disc(new Vector3(nt * end, 0, 0), 0.2f);
 
+                PolylinePath p = new PolylinePath();
+                for (int i = 0; i < m_DotProducts.Count; i++)
+                {
+                    p.AddPoint((end*(float)i/(float)(m_DotProducts.Count-1)),m_DotProducts[i],0);
+                    Color c_ = new Color(1-m_DotProducts[i], 0, m_DotProducts[i]);
+                    p.SetColor(i,c_);
+                }
+                
+                Draw.Polyline( p, closed:false, thickness:0.05f);
+                
                 int index = Mathf.RoundToInt(nt * (float)(m_DotProducts.Count-1.0f));
-                Color c = new Color(255, m_DotProducts[index], 255);
-                Draw.Disc(new Vector3(nt * end, m_DotProducts[index], 0), 0.2f, c);
+                Color c = new Color(1, 0, 0);
+                //Draw.Rectangle(Vector3.zero, new Rect(0,0,1,1),c);
+                c = new Color(1-m_DotProducts[index], 0, m_DotProducts[index]);
+                Draw.Disc(new Vector3(nt * end, m_DotProducts[index], 0), 0.1f, c);
+                Draw.Line(new Vector3(0, 0, 0),new Vector3(end, 0, 0));
+                Draw.Line(new Vector3(0, 0, 0),new Vector3(nt*end, 0, 0),Color.yellow);
+
+                
                 //Draw.Disc(new Vector3(nt * end, nt, 0), 0.2f);
 
                 //Draw.Disc(new Vector3(0, nt*end,0),0.2f);
