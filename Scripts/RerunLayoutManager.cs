@@ -9,7 +9,6 @@ namespace Rerun
         [SerializeField]
         private List<GameObject> m_Layouts;
         
-        // Update is called once per frame
         void Update()
         {
             if (Input.GetKey(KeyCode.Keypad0) || Input.GetKey(KeyCode.Alpha0))
