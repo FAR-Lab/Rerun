@@ -45,6 +45,10 @@ Rerun is currently set up for recording and playing back a VR user with hand tra
 
 To use Rerun in your scene:
 
+**New way**:
+1. Drag the Rerun prefab, in Prefabs folder, into your scene hierarchy. This nested prefab contains everything you need for a quick start.
+
+Old way (still works):
 1. Drag all three prefabs in the Prefabs/Main folder into your scene hierarchy
     1. You must remove any existing OVRCameraRig, the Rerun prefab will replace this
 2. Set the RerunOVRCameraRig as the Rig Source reference in the RerunManager inspector
@@ -54,7 +58,13 @@ You should now be able to record and play using the controls as indicated on the
 For recording additional objects in your scene, follow UR's user guide and documentation.
 
 # References
-You will use the following prefabs inside Prefabs/Main 
+
+All public methods and properties are documented with XML tags. Documentation can be generated with DocFX, Doxygen etc.
+
+## Rerun (prefab)
+This nested prefab contains the prefabs below, for the most convenient way, simply drag this prefab into your scene and you're good to go.
+
+Other prefabs in Prefabs/Main can be used individually:
 
 ## RerunManager (prefab)
 RerunManager contains public methods that can used to control recording and playback programamatically.
@@ -87,7 +97,7 @@ During recording, the user must stop recording before switching modes
 This prefab replaces the regular OVRCameraRig (using custom hands for hand tracking). It has UR recording components on multiple game objects in the rig hierarchy, for recording the head pose and hand tracking data.
 
 ## RerunPlaybackCameraRig (prefab)
-(Add description)
+This is a simple rig showcasing how cameras are wired into the Rerun process. You are not required to use this specific rig, any camera in the scene that renders to the corresponding render textures (see Camera1, Camera2, Camera3, as examples) will appear in the Rerun playback.
 
 # Samples
 
