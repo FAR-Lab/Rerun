@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace Rerun
 {
+    /// <summary>
+    /// The main Rerun class.
+    /// </summary>
     [RequireComponent(typeof(RerunPlaybackCameraManager))]
     public class RerunManager : MonoBehaviour
     {
@@ -15,12 +18,17 @@ namespace Rerun
         private ReplayFileTarget m_FileTarget;
         private RerunPlaybackCameraManager m_RerunPlaybackCameraManager;
 
-        // Properties
+        /// <summary>
+        /// Property for accessing the record ReplayHandle from Ultimate Replay 
+        /// </summary>
         public ReplayHandle recordHandle => m_RecordHandle;
 
+        /// <summary>
+        /// Property for accessing the playback ReplayHandle from Ultimate Replay 
+        /// </summary>
         public ReplayHandle playbackHandle => m_PlaybackHandle;
 
-        // Turning serialization off for safety
+        // Set to true for now, but his could be exposed in editor for flexibility
         private bool m_RecordToFile = true;
 
         // String prefix for file name. Use inspector, or property to set programmatically
@@ -29,23 +37,32 @@ namespace Rerun
         [SerializeField]
         private string m_RecordingPrefix = "";
         
+        /// <summary>
+        /// String prefix for filenames of recordings  
+        /// </summary>
         public string recordingPrefix
         {
             get => m_RecordingPrefix;
             set => m_RecordingPrefix = value;
         }
 
-        // This example assumes that a replay object has been assigned for recording
+        // This is the main VR rig. This should reference a Rerun prefab, containing a ReplayObject.
+        [Tooltip("This is the main VR rig. This should reference a Rerun prefab, containing a ReplayObject.")]
         [SerializeField]
         private ReplayObject m_RigSource;
 
-        // Assign a secondary object that will be replayed using data captured from the recordObject
+        // This is the clone VR rig, that will be replayed using data captured from the source rig.
+        // See Ultimate Replay documentation on clones.
+        [Tooltip("This is the clone VR rig, that will be replayed using data captured from the source rig.")]
         [SerializeField]
         private ReplayObject m_RigClone;
 
-        // String that contains information about active mode, name of file being recorded/played etc.
+        // Information about the active replay mode, name of file being recorded/played etc.
         private string m_InfoString;
 
+        /// <summary>
+        /// String containing information about the active replay mode, name of file being recorded/played etc.
+        /// </summary>
         public string infoString
         {
             get => m_InfoString;
@@ -60,6 +77,9 @@ namespace Rerun
             m_InfoString = "";
         }
 
+        /// <summary>
+        /// Enter Live mode.
+        /// </summary>
         public void Live()
         {
             // If recording then do nothing (recording must be stopped first)
@@ -86,6 +106,9 @@ namespace Rerun
             m_InfoString = "Live view";
         }
 
+        /// <summary>
+        /// Toggles the recording state. Can be called from a single button used to start and stop recording.
+        /// </summary>
         public void ToggleRecording()
         {
 
@@ -102,6 +125,9 @@ namespace Rerun
             }
         }
 
+        /// <summary>
+        /// Enter Play mode. This will play back any recorded data, from file or memory.
+        /// </summary>
         public void Play()
         {
             // If recording then do nothing (recording must be stopped first)
@@ -127,6 +153,9 @@ namespace Rerun
             }
         }
 
+        /// <summary>
+        /// Open a file dialog to load .replay recordings. Starts playback immediately after opening.
+        /// </summary>
         public void Open()
         {
             // If recording then do nothing (recording must be stopped first)
@@ -140,6 +169,9 @@ namespace Rerun
             Play();
         }
 
+        /// <summary>
+        /// Stop playback.
+        /// </summary>
         private void StopPlayback()
         {
             // If recording then do nothing (recording must be stopped first)
@@ -158,6 +190,9 @@ namespace Rerun
             m_RerunPlaybackCameraManager.DisableCameras();
         }
         
+        /// <summary>
+        /// Stop recording.
+        /// </summary>
         public void StopRecording()
         {
             // If not recording then do nothing
@@ -174,6 +209,9 @@ namespace Rerun
         }
 
 
+        /// <summary>
+        /// Begin recording.
+        /// </summary>
         public void BeginRecording()
         {
             // If recording then do nothing (recording must be stopped first)
