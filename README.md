@@ -46,7 +46,7 @@ Rerun is currently set up for recording and playing back a VR user with hand tra
 To use Rerun in your scene:
 
 **New way**:
-1. Drag the Rerun prefab, in Prefabs folder, into your scene hierarchy. This nested prefab contains everything you need for a quick start.
+1. Drag the Rerun prefab, in Prefabs folder, into your scene hierarchy. This nested prefab contains everything you need for a quick start. Once this prefab is in your scene you can record and playback your hand tracked VR avatar.
 
 Old way (still works):
 1. Drag all three prefabs in the Prefabs/Main folder into your scene hierarchy
