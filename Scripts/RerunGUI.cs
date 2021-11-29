@@ -31,7 +31,12 @@ namespace Rerun
         private Texture2D m_PauseTexture = null;
         private Texture2D m_SettingsTexture = null;
 
-        public int m_UIScale = 2;
+        // [Tooltip("Scale for IMGUI elements. Default is 2, fit for full HD display.")]
+        // [Range(0.1f, 6)]
+        // [SerializeField]
+        // Fixed for now as 2. Fit for full HD display.
+        private int m_UIScale = 2;
+        
         private RerunManager m_RerunManager;
 
         private string m_InfoString = "";
@@ -55,7 +60,9 @@ namespace Rerun
             m_PauseTexture = Resources.Load<Texture2D>("PauseIcon");
             m_SettingsTexture = Resources.Load<Texture2D>("SettingsIcon");
         }
-
+        /// <summary>
+        /// This will render a GUI in the Editor during play, but not visible to the VR user. See Unity documentation for IMGUI.  
+        /// </summary>
         public void OnGUI()
         {
             // Default label style
