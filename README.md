@@ -1,4 +1,5 @@
 # Rerun documentation
+(WIP)
 
 # Overview
 
@@ -7,6 +8,8 @@
 This repository is meant to be used as **a git submodule inside the Assets folder of a Unity Project**. See the [Rerun Sample Project](https://github.com/FAR-Lab/Rerun-Sample-Project) as an example of how Rerun can be used within a project.
 
 Extending Rerun requires knowledge of UR. See UR's user guide and samples for more information.
+
+See a video of an earlier version of Rerun [here](https://drive.google.com/file/d/14I3H60u8w3ewDkKpN1TuqM-na5cMjiOR/view?usp=sharing).
 
 # Installation instructions
 
@@ -54,40 +57,38 @@ For recording additional objects in your scene, follow UR's user guide and docum
 You will use the following prefabs inside Prefabs/Main 
 
 ## RerunManager (prefab)
-RerunManager has public methods that can used to control recoring and playback through code.
-The use of Begin and Stop is to match with Ultimate Replay API.
+RerunManager contains public methods that can used to control recording and playback programamatically.
 
 ### RerunManager (script)
 
 #### Public methods
-- `BeginRecording()`
-- `StopRecording()`
+- `BeginRecording()` : Begins recording
+- `StopRecording()` : Stops current recording
 - `ToggleRecording()` : Toggles the recording mode. If using a single input source for both begin/stop recording, then use this.
 - `Play()` : Plays the currently loaeded recording. Only works if not recording.
 - `Live()` : Regular live mode. Only works if not recording.
 - `Open()` : Open a file dialog for loading a .replay file. Only works if not recording.
 
 #### Properties
-- `recordingPrefix` : String prefix for file name. Use inspector, or property to set programmatically. For example, use to store session ID, user name, scene name etc., in the file name.
-- `infoString` : String that contains information about active mode, name of file being recorded/played etc. Read only.
+- `recordingPrefix` : String prefix for the file name. Use inspector, or property to set programmatically. For example, use to store session ID, user name, scene name etc., in the file name.
+- `infoString` : String that contains information about active mode, name of file being recorded/played etc. It is frequently used by `RerunGUI` for displaying information on screen. Read only.
 
 ### RerunGUI
-The RerunGUI prefab provides convenient recording and playback controls. It uses Unity's IMGUI which means that it doesn't show up in the view of the VR
-The RerunGUI prefab provides convenient recording and playback controls:
-- R: Start/stop recording
-- P: Play the current recording
-- L: Live view
-- O: Open .replay files
+The RerunGUI prefab provides convenient recording and playback controls. It uses Unity's IMGUI which means that it doesn't show up in the view of the VR user.
+RerunGUI visualizes the current state of the RerunManager (recording, playing etc.) using IMGUI labels. RerunGUI also includes timeline and playback controls.
+- R: Start/stop recording. After stopping, it automatically goes to play mode and plays recording.
+- P: Play the currently loaded recording. This can be the most recent recording or a recording loaded from file.
+- L: Live view.
+- O: Open .replay file containing a recording.
 
 During recording, the user must stop recording before switching modes
 
-The playback 
-
 ## RerunOVRCameraRig (prefab)
-This prefab replaces the regular OVRCameraRig, for hand tracking. It has UR recording components on multiple game objects in the rig hierarchy, for recording the head pose and handtracking data.
+This prefab replaces the regular OVRCameraRig (using custom hands for hand tracking). It has UR recording components on multiple game objects in the rig hierarchy, for recording the head pose and hand tracking data.
 
 ## RerunPlaybackCameraRig (prefab)
-[Add text]
+(Add description)
+
 # Samples
 
 Sample scenes can be found within the Scenes folder. Currently the following samples are available:
