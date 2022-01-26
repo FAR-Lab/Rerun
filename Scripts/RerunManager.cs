@@ -31,6 +31,8 @@ namespace Rerun
         // Set to true for now, but his could be exposed in editor for flexibility
         private bool m_RecordToFile = true;
 
+        [SerializeField] public bool _DontDestroyOnLoad = true;
+        
         // String prefix for file name. Use inspector, or property to set programmatically
         // For example, use to store session ID, user name, scene name etc., in the file name
         // TODO - Store information like this in the recording itself, or JSON
@@ -60,6 +62,7 @@ namespace Rerun
         // Information about the active replay mode, name of file being recorded/played etc.
         private string m_InfoString;
 
+        
         /// <summary>
         /// String containing information about the active replay mode, name of file being recorded/played etc.
         /// </summary>
@@ -75,6 +78,7 @@ namespace Rerun
             m_RerunPlaybackCameraManager = GetComponent<RerunPlaybackCameraManager>();
 
             m_InfoString = "";
+            if (_DontDestroyOnLoad) DontDestroyOnLoad(gameObject);
         }
 
         /// <summary>
