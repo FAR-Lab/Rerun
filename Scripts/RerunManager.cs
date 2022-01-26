@@ -32,13 +32,14 @@ namespace Rerun
         private bool m_RecordToFile = true;
 
         [SerializeField] public bool _DontDestroyOnLoad = true;
-        
+
         // String prefix for file name. Use inspector, or property to set programmatically
         // For example, use to store session ID, user name, scene name etc., in the file name
         // TODO - Store information like this in the recording itself, or JSON
         [SerializeField]
         private string m_RecordingPrefix = "";
-        
+
+        private string folderName = "temp";
         /// <summary>
         /// String prefix for filenames of recordings  
         /// </summary>
@@ -167,8 +168,11 @@ namespace Rerun
             {
                 return;
             }
-
+#if UNITY_EDITOR
             var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
+#else
+  var filePath="";
+#endif
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
             Play();
         }
@@ -212,11 +216,17 @@ namespace Rerun
             
         }
 
+        public void SetRecordingFolder(string val) { folderName = val; }
+
+        public void BeginRecording(string Prefix) {
+            m_RecordingPrefix = Prefix;
+            BeginRecording();
+        }
 
         /// <summary>
         /// Begin recording.
         /// </summary>
-        public void BeginRecording()
+        public void  BeginRecording()
         {
             // If recording then do nothing (recording must be stopped first)
             if (ReplayManager.IsRecording(m_RecordHandle))
@@ -230,7 +240,7 @@ namespace Rerun
             {
                 string fileName = m_RecordingPrefix + "_Rerun_" +
                                   System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
-                m_FileTarget = ReplayFileTarget.CreateReplayFile(Application.persistentDataPath + "/" + fileName);
+                m_FileTarget = ReplayFileTarget.CreateReplayFile(Application.persistentDataPath + "/" +folderName+"/"+ fileName);
 
                 if (m_FileTarget.MemorySize > 0)
                 {
