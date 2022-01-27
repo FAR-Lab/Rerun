@@ -158,6 +158,23 @@ namespace Rerun
             }
         }
 
+        
+        /// <summary>
+        /// Should some other part of your software need to know what replayfile is being loaded you can register (and de_register)
+        /// callback delegates here that get called before the file is loaded. Mostly used to load the scene before the file is loaded.
+        /// </summary>
+        
+        public delegate void preLoadDelegate(string fileToBeLoaded);
+        private preLoadDelegate handlers;
+
+        public void RegisterPreLoadHandler(preLoadDelegate del) {
+            handlers += del;
+        }
+        public void DeRegisterPreLoadHandler(preLoadDelegate del) {
+            handlers -= del;
+        }
+        
+        
         /// <summary>
         /// Open a file dialog to load .replay recordings. Starts playback immediately after opening.
         /// </summary>
@@ -173,10 +190,18 @@ namespace Rerun
 #else
   var filePath="";
 #endif
+            if (handlers != null) {
+                handlers.Invoke(filePath);
+            }
+
+            return;
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
             Play();
         }
 
+        public bool IsRecording() {
+            return ReplayManager.IsRecording(m_RecordHandle);
+        }
         /// <summary>
         /// Stop playback.
         /// </summary>
@@ -240,8 +265,12 @@ namespace Rerun
             {
                 string fileName = m_RecordingPrefix + "_Rerun_" +
                                   System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
-                m_FileTarget = ReplayFileTarget.CreateReplayFile(Application.persistentDataPath + "/" +folderName+"/"+ fileName);
 
+
+                string path = Application.persistentDataPath + "/" + folderName + "/";
+                System.IO.Directory.CreateDirectory(path);
+                m_FileTarget = ReplayFileTarget.CreateReplayFile(path+ fileName);
+Debug.Log("RecordingToFile"+ path+ fileName);
                 if (m_FileTarget.MemorySize > 0)
                 {
                     m_FileTarget.PrepareTarget(ReplayTargetTask.Discard);
