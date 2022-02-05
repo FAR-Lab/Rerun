@@ -194,7 +194,7 @@ namespace Rerun
                 handlers.Invoke(filePath);
             }
 
-            return;
+            
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
             Play();
         }
