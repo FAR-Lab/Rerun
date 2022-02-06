@@ -242,12 +242,16 @@ namespace Rerun
         }
 
         public void SetRecordingFolder(string val) { folderName = val; }
+        public string GetRecordingFolder() { return folderName; }
 
         public void BeginRecording(string Prefix) {
             m_RecordingPrefix = Prefix;
             BeginRecording();
         }
 
+        public string GetCurrentFilePath() {
+            return Application.persistentDataPath + "/" + folderName + "/";
+        }
         /// <summary>
         /// Begin recording.
         /// </summary>
@@ -269,6 +273,7 @@ namespace Rerun
 
                 string path = Application.persistentDataPath + "/" + folderName + "/";
                 System.IO.Directory.CreateDirectory(path);
+                
                 m_FileTarget = ReplayFileTarget.CreateReplayFile(path+ fileName);
 Debug.Log("RecordingToFile"+ path+ fileName);
                 if (m_FileTarget.MemorySize > 0)
