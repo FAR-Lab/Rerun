@@ -24,12 +24,12 @@ namespace Rerun
         private RerunPlaybackCameraManager m_RerunPlaybackCameraManager;
 
         /// <summary>
-        /// Property for accessing the record ReplayHandle from Ultimate Replay 
+        /// Property for accessing the record ReplayHandle from Ultimate Replay
         /// </summary>
         public ReplayHandle recordHandle => m_RecordHandle;
 
         /// <summary>
-        /// Property for accessing the playback ReplayHandle from Ultimate Replay 
+        /// Property for accessing the playback ReplayHandle from Ultimate Replay
         /// </summary>
         public ReplayHandle playbackHandle => m_PlaybackHandle;
 
@@ -46,7 +46,7 @@ namespace Rerun
         private string folderName = "temp";
 
         /// <summary>
-        /// String prefix for filenames of recordings  
+        /// String prefix for filenames of recordings
         /// </summary>
         public string recordingPrefix
         {
@@ -198,21 +198,21 @@ namespace Rerun
             var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
             InternalOpenFile(filePath);
 */
-            
 
-#if UNITY_STANDALONE || UNITY_EDITOR 
+
+#if UNITY_STANDALONE || UNITY_EDITOR
             FileBrowser.SetDefaultFilter( ".replay" );
             FileBrowser.ShowLoadDialog((paths) => { InternalOpenFile(paths[0]); },
                 () => { Debug.Log("Canceled file loading"); },
-                FileBrowser.PickMode.Files, 
-                false, 
-                Application.persistentDataPath, 
-                null, 
-                "Select one ReRun file", 
+                FileBrowser.PickMode.Files,
+                false,
+                Application.persistentDataPath,
+                null,
+                "Select one ReRun file",
                 "Select");
 
-#else 
-// on Android (Oculus Headset) we do not require ReRun so we exclude the execution here. 
+#else
+// on Android (Oculus Headset) we do not require ReRun so we exclude the execution here.
 //  var filePath = "";
 //  InternalOpenFile(filePath);
 #endif
