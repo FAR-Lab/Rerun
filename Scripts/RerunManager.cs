@@ -1,6 +1,7 @@
 ﻿using UltimateReplay.Storage;
 using UnityEngine;
 using UltimateReplay;
+using UltimateReplay.Storage;
 using UnityEditor;
 using UnityEngine.UI;
 
@@ -227,6 +228,7 @@ namespace Rerun
 
 
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
+           
             Play();
         }
 
@@ -266,8 +268,9 @@ namespace Rerun
             {
                 return;
             }
-
+           
             ReplayManager.StopRecording(ref m_RecordHandle);
+            Debug.Log("Stopped Recording with length: "+m_FileTarget.Duration);
             m_RigClone.gameObject.SetActive(true);
             ReplayObject.CloneReplayObjectIdentity(m_RigSource, m_RigClone);
             m_InfoString = "Live view";
@@ -289,10 +292,17 @@ namespace Rerun
             BeginRecording();
         }
 
-        public string GetCurrentFilePath()
+        public string GetCurrentFolderPath()
         {
             return Application.persistentDataPath + "/" + folderName + "/";
         }
+        
+        public string GetCurrentFilePath()
+        {
+            return LastRecordedFilePath;
+        }
+
+        private string LastRecordedFilePath;
 
         /// <summary>
         /// Begin recording.
@@ -317,6 +327,7 @@ namespace Rerun
                 System.IO.Directory.CreateDirectory(path);
 
                 m_FileTarget = ReplayFileTarget.CreateReplayFile(path + fileName);
+                LastRecordedFilePath = m_FileTarget.FilePath;
                 Debug.Log("RecordingToFile" + path + fileName);
                 if (m_FileTarget.MemorySize > 0)
                 {
