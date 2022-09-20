@@ -1,8 +1,14 @@
 ﻿using UltimateReplay.Storage;
 using UnityEngine;
 using UltimateReplay;
+using UltimateReplay.Storage;
 using UnityEditor;
 using UnityEngine.UI;
+
+#if (UNITY_STANDALONE || UNITY_EDITOR)
+using SimpleFileBrowser;  //https://assetstore.unity.com/packages/tools/gui/runtime-file-browser-113006#description
+#endif
+
 
 namespace Rerun
 {
@@ -19,12 +25,12 @@ namespace Rerun
         private RerunPlaybackCameraManager m_RerunPlaybackCameraManager;
 
         /// <summary>
-        /// Property for accessing the record ReplayHandle from Ultimate Replay 
+        /// Property for accessing the record ReplayHandle from Ultimate Replay
         /// </summary>
         public ReplayHandle recordHandle => m_RecordHandle;
 
         /// <summary>
-        /// Property for accessing the playback ReplayHandle from Ultimate Replay 
+        /// Property for accessing the playback ReplayHandle from Ultimate Replay
         /// </summary>
         public ReplayHandle playbackHandle => m_PlaybackHandle;
 
@@ -32,15 +38,16 @@ namespace Rerun
         private bool m_RecordToFile = true;
 
         [SerializeField] public bool _DontDestroyOnLoad = true;
-        
+
         // String prefix for file name. Use inspector, or property to set programmatically
         // For example, use to store session ID, user name, scene name etc., in the file name
         // TODO - Store information like this in the recording itself, or JSON
-        [SerializeField]
-        private string m_RecordingPrefix = "";
-        
+        [SerializeField] private string m_RecordingPrefix = "";
+
+        private string folderName = "temp";
+
         /// <summary>
-        /// String prefix for filenames of recordings  
+        /// String prefix for filenames of recordings
         /// </summary>
         public string recordingPrefix
         {
@@ -62,7 +69,7 @@ namespace Rerun
         // Information about the active replay mode, name of file being recorded/played etc.
         private string m_InfoString;
 
-        
+
         /// <summary>
         /// String containing information about the active replay mode, name of file being recorded/played etc.
         /// </summary>
@@ -115,7 +122,6 @@ namespace Rerun
         /// </summary>
         public void ToggleRecording()
         {
-
             // Start a fresh recording
             if (!ReplayManager.IsRecording(m_RecordHandle))
             {
@@ -139,6 +145,7 @@ namespace Rerun
             {
                 return;
             }
+
             StopPlayback();
 
             m_RerunPlaybackCameraManager.EnableCameras();
@@ -157,6 +164,26 @@ namespace Rerun
             }
         }
 
+
+        /// <summary>
+        /// Should some other part of your software need to know what replayfile is being loaded you can register (and de_register)
+        /// callback delegates here that get called before the file is loaded. Mostly used to load the scene before the file is loaded.
+        /// </summary>
+        public delegate void preLoadDelegate(string fileToBeLoaded);
+
+        private preLoadDelegate handlers;
+
+        public void RegisterPreLoadHandler(preLoadDelegate del)
+        {
+            handlers += del;
+        }
+
+        public void DeRegisterPreLoadHandler(preLoadDelegate del)
+        {
+            handlers -= del;
+        }
+
+
         /// <summary>
         /// Open a file dialog to load .replay recordings. Starts playback immediately after opening.
         /// </summary>
@@ -167,10 +194,47 @@ namespace Rerun
             {
                 return;
             }
-
+/* // Implementatio without using the file browser
+            #if UNITY_EDITOR
             var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
+            InternalOpenFile(filePath);
+*/
+
+
+#if UNITY_STANDALONE || UNITY_EDITOR
+            FileBrowser.SetDefaultFilter( ".replay" );
+            FileBrowser.ShowLoadDialog((paths) => { InternalOpenFile(paths[0]); },
+                () => { Debug.Log("Canceled file loading"); },
+                FileBrowser.PickMode.Files,
+                false,
+                Application.persistentDataPath,
+                null,
+                "Select one ReRun file",
+                "Select");
+
+#else
+// on Android (Oculus Headset) we do not require ReRun so we exclude the execution here.
+//  var filePath = "";
+//  InternalOpenFile(filePath);
+#endif
+        }
+
+        private void InternalOpenFile(string filePath)
+        {
+            if (handlers != null)
+            {
+                handlers.Invoke(filePath);
+            }
+
+
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
+           
             Play();
+        }
+
+        public bool IsRecording()
+        {
+            return ReplayManager.IsRecording(m_RecordHandle);
         }
 
         /// <summary>
@@ -183,17 +247,17 @@ namespace Rerun
             {
                 return;
             }
-            
+
             // If not playing then do nothing
             if (!ReplayManager.IsReplaying(m_PlaybackHandle))
             {
                 return;
             }
-            
+
             ReplayManager.StopPlayback(ref m_PlaybackHandle);
             m_RerunPlaybackCameraManager.DisableCameras();
         }
-        
+
         /// <summary>
         /// Stop recording.
         /// </summary>
@@ -204,14 +268,41 @@ namespace Rerun
             {
                 return;
             }
-
+           
             ReplayManager.StopRecording(ref m_RecordHandle);
+            Debug.Log("Stopped Recording with length: "+m_FileTarget.Duration);
             m_RigClone.gameObject.SetActive(true);
             ReplayObject.CloneReplayObjectIdentity(m_RigSource, m_RigClone);
             m_InfoString = "Live view";
-            
         }
 
+        public void SetRecordingFolder(string val)
+        {
+            folderName = val;
+        }
+
+        public string GetRecordingFolder()
+        {
+            return folderName;
+        }
+
+        public void BeginRecording(string Prefix)
+        {
+            m_RecordingPrefix = Prefix;
+            BeginRecording();
+        }
+
+        public string GetCurrentFolderPath()
+        {
+            return Application.persistentDataPath + "/" + folderName + "/";
+        }
+        
+        public string GetCurrentFilePath()
+        {
+            return LastRecordedFilePath;
+        }
+
+        private string LastRecordedFilePath;
 
         /// <summary>
         /// Begin recording.
@@ -230,8 +321,14 @@ namespace Rerun
             {
                 string fileName = m_RecordingPrefix + "_Rerun_" +
                                   System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
-                m_FileTarget = ReplayFileTarget.CreateReplayFile(Application.persistentDataPath + "/" + fileName);
 
+
+                string path = Application.persistentDataPath + "/" + folderName + "/";
+                System.IO.Directory.CreateDirectory(path);
+
+                m_FileTarget = ReplayFileTarget.CreateReplayFile(path + fileName);
+                LastRecordedFilePath = m_FileTarget.FilePath;
+                Debug.Log("RecordingToFile" + path + fileName);
                 if (m_FileTarget.MemorySize > 0)
                 {
                     m_FileTarget.PrepareTarget(ReplayTargetTask.Discard);
