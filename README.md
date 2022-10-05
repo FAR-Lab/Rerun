@@ -1,7 +1,11 @@
 # Rerun documentation
+
+
+[![ReRun Demonstration Video](http://img.youtube.com/vi/kjU4pCcUkCU/0.jpg)](http://www.youtube.com/watch?v=kjU4pCcUkCU "Rerun: Enabling Multi-Perspective Analysis of Driving Interaction in VR - AutoUI 2022")
+
+
 (WIP)
 
-![Rerun video](https://github.com/FAR-Lab/Rerun/blob/main/Images/ReRun_V2.mp4?raw=true)
 # Overview
 
 **Rerun** allows the user to record and play back activities from a VR scene. It is built on top of the [Ultimate Replay 2.0](https://assetstore.unity.com/packages/tools/camera/ultimate-replay-2-0-178602) (**UR**) asset from Unity's Asset Store.
