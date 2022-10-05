@@ -83,6 +83,7 @@ crashlytics-build.properties
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+images/ReRun_V2.mp4
 
 # AWS User-specific
 .idea/**/aws.xml
