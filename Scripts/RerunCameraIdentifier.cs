@@ -26,7 +26,7 @@ public class RerunCameraIdentifier : MonoBehaviour
     private CameraFollowMode mode = CameraFollowMode.Other;
     public Transform FollowTransform;
     public Boolean AdjustableCamera;
-    private float m_FlySpeed = 7;
+    public float m_FlySpeed = 25;
     private Vector3 Offset;
     private Quaternion OffsetRotation=Quaternion.identity;
 
