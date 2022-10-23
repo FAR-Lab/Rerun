@@ -16,10 +16,7 @@ public class RerunCameraIdentifier : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (AdjustableCamera == true)
-        {
-            mode = CameraFollowMode.Adjustable;
-        }
+   
     }
 
     
@@ -58,10 +55,12 @@ public class RerunCameraIdentifier : MonoBehaviour
                 var rotation = FollowTransform.rotation;
                 transform1.rotation = rotation * OffsetRotation;
                 transform1.position = FollowTransform.position + rotation * Offset;
-                
+
                 break;
-            
-            case CameraFollowMode.Adjustable:
+        }
+
+        if (AdjustableCamera)
+            {
                 
                 var transform2 = transform;
                 
@@ -77,8 +76,7 @@ public class RerunCameraIdentifier : MonoBehaviour
                 }
 
                 transform2.Translate(Vector3.forward * m_FlySpeed * Input.mouseScrollDelta.y * Time.deltaTime);
-                break;
-        }
+            }
         
        
     }
@@ -92,7 +90,6 @@ public class RerunCameraIdentifier : MonoBehaviour
         Followone,
         Followmultiple,
         Fixed,
-        Adjustable,
         Other
     }
     
