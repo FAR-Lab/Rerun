@@ -11,6 +11,8 @@ namespace Rerun
 
         private RerunManager m_RerunManager;
 
+        [HideInInspector]
+        public bool InputOpen = false;
         void Start()
         {
             m_RerunManager = GetComponent<RerunManager>();
@@ -19,29 +21,30 @@ namespace Rerun
         void Update()
         {
             // TODO - Improve input handling. This is mostly for testing
-            
-            if (IsReplayKeyPressed(m_RecordModeShortcut))
+            // There are more inputs in timeline.cs under the EVERYTHING prefab
+            // There are more inputs in RerunLayoutManager.cs
+            if (IsReplayKeyPressed(m_RecordModeShortcut) && !InputOpen)
             {
                 m_RerunManager.ToggleRecording();
             }
-            if (IsReplayKeyPressed(m_LiveModeShortcut))
+            if (IsReplayKeyPressed(m_LiveModeShortcut) && !InputOpen)
             {
                 m_RerunManager.Live();
             }
-            if (IsReplayKeyPressed(m_PlayModeShortcut))
+            if (IsReplayKeyPressed(m_PlayModeShortcut) && !InputOpen)
             {
                 m_RerunManager.Play();
             }
-            if (IsReplayKeyPressed(m_OpenShortcut))
+            if (IsReplayKeyPressed(m_OpenShortcut) && !InputOpen)
             {
                 m_RerunManager.Open();
             }
             
-            if (IsReplayKeyPressed(KeyCode.K))
+            if (IsReplayKeyPressed(KeyCode.K) && !InputOpen)
             {
                 m_RerunManager.BeginRecording();
             }
-            if (IsReplayKeyPressed(KeyCode.J))
+            if (IsReplayKeyPressed(KeyCode.J) && !InputOpen)
             {
                 m_RerunManager.StopRecording();
             }

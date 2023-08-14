@@ -36,28 +36,39 @@ namespace Rerun
 
         private string m_InfoString = "";
 
+        public ReplayStorageTarget target;
+        [HideInInspector]
+        public float totalTimeInFloat;
+        public RectTransform scrubberHandle;
+        public RectTransform timelineWidth;
+        public GameObject timeline;
+        [HideInInspector]
+        public float currentTimeInFloat;
+
         public void Awake()
         {
             // Find or create a replay manager
             ReplayManager.ForceAwake();
             m_RerunManager = GetComponent<RerunManager>();
-            
         }
 
         public void Start()
         {
             m_PlayPauseWidth = 24 * m_UIScale;
-            m_PlayPauseHeight = 20 * m_UIScale;
+            m_PlayPauseHeight = 24 * m_UIScale;
             m_StateButtonWidth = 48 * m_UIScale;
             m_StateButtonHeight = 18 * m_UIScale;
 
             m_PlayTexture = Resources.Load<Texture2D>("PlayIcon");
             m_PauseTexture = Resources.Load<Texture2D>("PauseIcon");
             m_SettingsTexture = Resources.Load<Texture2D>("SettingsIcon");
+            scrubberHandle.anchoredPosition = new Vector2(0, 0);
+            currentTimeInFloat = 0;
         }
 
         public void OnGUI()
         {
+            totalTimeInFloat = ReplayTime.GetTimeFloat((target != null) ? target.Duration : 0);
             // Default label style
             GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
             labelStyle.fontStyle = FontStyle.Bold;
@@ -67,8 +78,8 @@ namespace Rerun
             boxStyle.fontSize = 20;
 
             // Create the gui screen area
-            GUILayout.BeginArea(new Rect(10 * m_UIScale * 2, 10 * m_UIScale, Screen.width - 20 * m_UIScale * 2,
-                Screen.height - 20 * m_UIScale));
+            GUILayout.BeginArea(new Rect(5 * m_UIScale , 5 * m_UIScale, Screen.width - 10 * m_UIScale * 2,
+                Screen.height - 65 * m_UIScale));
 
             {
                 GUILayout.BeginHorizontal();
@@ -87,13 +98,9 @@ namespace Rerun
                     GUI.color = (ReplayManager.IsRecording(m_RecordHandle) == true) ? m_HighlightRecording : m_Normal;
 
                     m_RecordHandle = m_RerunManager.recordHandle;
-                    if (!ReplayManager.IsRecording(m_RecordHandle))
+                    if (ReplayManager.IsRecording(m_RecordHandle))
                     {
-                        GUILayout.Box(new GUIContent("Rec (R)", "Begin recording"), boxStyle,
-                            GUILayout.Width(m_StateButtonWidth), GUILayout.Height(m_StateButtonHeight));
-                    }
-                    else
-                    {
+
                         GUILayout.Box(new GUIContent("Stop (R)", "Stop recording"), boxStyle,
                             GUILayout.Width(m_StateButtonWidth), GUILayout.Height(m_StateButtonHeight));
                     }
@@ -102,20 +109,20 @@ namespace Rerun
                     // Playback
                     ///////////
                     
-                    // Show only if not recording 
+/*                    // Show only if not recording 
                     if (!ReplayManager.IsRecording(m_RecordHandle))
                     {
                         GUI.color = (ReplayManager.IsReplaying(m_PlaybackHandle) == true) ? m_Highlight : m_Normal;
 
                         GUILayout.Box(new GUIContent("Play (P)", "Begin playback"), boxStyle,
                             GUILayout.Width(m_StateButtonWidth), GUILayout.Height(m_StateButtonHeight));
-                    }
+                    }*/
 
                     ///////////
                     // Live
                     ///////////
-                    
-                    // Show only if not recording
+
+/*                    // Show only if not recording
                     if (!ReplayManager.IsRecording(m_RecordHandle))
                     {
                         GUI.color = (ReplayManager.IsRecording(m_RecordHandle) == false &&
@@ -127,31 +134,42 @@ namespace Rerun
                             GUILayout.Width(m_StateButtonWidth),
                             GUILayout.Height(m_StateButtonHeight));
                     }
-
+*/
                     ///////////
                     // Open
                     ///////////
                     
-                    // Show only if not recording
+/*                    // Show only if not recording
                     if (!ReplayManager.IsRecording(m_RecordHandle))
                     {
                         GUI.color = m_Normal;
 
                         GUILayout.Box(new GUIContent("Open (O)", "Open playback file"), boxStyle,
                             GUILayout.Width(m_StateButtonWidth), GUILayout.Height(m_StateButtonHeight));
-                    }
+                    }*/
+/*                    GUI.color = m_Normal;
+
+                    GUILayout.Box(new GUIContent("New Anno (N)", "Create new annotation"), boxStyle,
+                        GUILayout.Width(m_StateButtonWidth * 1.5f), GUILayout.Height(m_StateButtonHeight));
+
+
+                        GUI.color = (timeline.GetComponent<timeline>().DeleteMode == true) ? m_Highlight : m_Normal;
+
+                        GUILayout.Box(new GUIContent("Delete Anno (D)", "Delete an annotation"), boxStyle,
+                            GUILayout.Width(m_StateButtonWidth * 1.75f), GUILayout.Height(m_StateButtonHeight));*/
+
 
                     ///////////
                     // Timer
                     ///////////
-                    
+
                     GUI.color = m_Highlight;
                     
                     // Show only if recording
                     if (ReplayManager.IsRecording(m_RecordHandle) == true)
                     {
                         // Get the storage target
-                        ReplayStorageTarget target = ReplayManager.GetReplayStorageTarget(m_RecordHandle);
+                        target = ReplayManager.GetReplayStorageTarget(m_RecordHandle);
 
                         string recordTime =
                             ReplayTime.GetCorrectedTimeValueString((target != null) ? target.Duration : 0);
@@ -185,7 +203,7 @@ namespace Rerun
                 {
                     m_PlaybackHandle = m_RerunManager.playbackHandle;
                     // Get the playback source
-                    ReplayStorageTarget target = ReplayManager.GetReplayStorageTarget(m_PlaybackHandle);
+                    target = ReplayManager.GetReplayStorageTarget(m_PlaybackHandle);
 
                     // Get the playback time
                     ReplayTime playbackTime = ReplayManager.GetPlaybackTime(m_PlaybackHandle);
@@ -205,6 +223,10 @@ namespace Rerun
                         }
                         else
                         {
+                            //move scrubber per second
+                            float speed = (timelineWidth.rect.width / totalTimeInFloat)/2;
+                            scrubberHandle.anchoredPosition += new Vector2(speed * Time.deltaTime, 0);
+
                             // Draw a pause button
                             if (GUILayout.Button(m_PauseTexture, GUILayout.Width(m_PlayPauseWidth),
                                     GUILayout.Height(m_PlayPauseHeight)) == true)
@@ -215,6 +237,7 @@ namespace Rerun
                         }
 
                         // Slider space
+
                         GUILayout.BeginVertical();
                         {
                             // Push down slightly
@@ -223,8 +246,10 @@ namespace Rerun
                             float input = playbackTime.NormalizedTime;
 
                             // Draw the seek slider
-                            float output = GUILayout.HorizontalSlider(input, 0, 1, GUILayout.Height(m_PlayPauseHeight));
-
+                            float output = this.transform.GetComponentInChildren<resizeSide>().scrubberTimeNormalized;
+                            currentTimeInFloat = output * totalTimeInFloat;
+                            //GUILayout.HorizontalSlider(input, 0, 1, GUILayout.Height(m_PlayPauseHeight));
+                            
                             // Check for change
                             if (input != output)
                             {
@@ -234,7 +259,7 @@ namespace Rerun
                         }
                         GUILayout.EndVertical();
 
-                        // Settings button
+/*                        // Settings button
                         if (GUILayout.Button(new GUIContent(m_SettingsTexture, "Open playback settings"),
                             GUILayout.Width(m_PlayPauseWidth), GUILayout.Height(m_PlayPauseHeight)) == true)
                         {
@@ -248,12 +273,11 @@ namespace Rerun
                             Rect area = new Rect(Screen.width - 360, Screen.height - 150, 240, 50);
 
                             DrawGUISettings(area);
-                        }
+                        }*/
 
                         string currentTime = ReplayTime.GetCorrectedTimeValueString(playbackTime.Time);
                         string totalTime =
                             ReplayTime.GetCorrectedTimeValueString((target != null) ? target.Duration : 0);
-
                         GUILayout.Label(string.Format("{0} / {1}", currentTime, totalTime), GUI.skin.button,
                             GUILayout.Width(75));
                     }

@@ -9,6 +9,10 @@ namespace Rerun
     [RequireComponent(typeof(RerunPlaybackCameraManager))]
     public class RerunManager : MonoBehaviour
     {
+        public RectTransform scrubber;
+        public GameObject myTimeline;
+        public GameObject Layout0;
+        public GameObject myHotkeyscreen;
         private ReplayStorageTarget m_MemoryTarget = new ReplayMemoryTarget();
         private ReplayHandle m_RecordHandle = ReplayHandle.invalid;
         private ReplayHandle m_PlaybackHandle = ReplayHandle.invalid;
@@ -125,6 +129,7 @@ namespace Rerun
                 m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
                 m_InfoString = "Playing from memory";
             }
+
         }
 
         public void Open()
@@ -138,6 +143,14 @@ namespace Rerun
             var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
             Play();
+            //my timeline does a weird thing where it doesnt show if u open a new clip so i had to do this weird
+            myTimeline.transform.SetParent(this.transform);
+            myTimeline.transform.SetParent(Layout0.transform);
+            myHotkeyscreen.transform.SetParent(this.transform);
+            myHotkeyscreen.transform.SetParent(Layout0.transform);
+            myHotkeyscreen.GetComponentInChildren<HotkeysScreen>().hotkeyscreen.SetActive(false);
+            myTimeline.GetComponentInChildren<autoGenerateTimeMarkers>().ReInstantiateMarkers(this.transform.GetComponentInChildren<timeline>().localLength);
+
         }
 
         private void StopPlayback()

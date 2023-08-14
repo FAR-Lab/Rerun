@@ -8,7 +8,7 @@ namespace Rerun
     {
         // TODO - Clean up and improve. Separate freecam and camera management
         
-        private Camera m_FreeCam = null;
+        public Camera m_FreeCam = null;
         private Vector3 m_StartPosition;
         private Quaternion m_StartRotation;
         private Vector2 m_CamRotation = Vector2.zero;
@@ -57,6 +57,7 @@ namespace Rerun
                 // Disable by default
                 m_FreeCam.enabled = false;
                 m_LayoutManager.SetActive(false);
+
             }
         }
 
