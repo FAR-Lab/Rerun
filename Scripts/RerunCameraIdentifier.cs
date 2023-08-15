@@ -16,12 +16,14 @@ public class RerunCameraIdentifier : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+   
     }
 
     
     private CameraFollowMode mode = CameraFollowMode.Other;
     public Transform FollowTransform;
+    public Boolean AdjustableCamera;
+    public float m_FlySpeed = 25;
     private Vector3 Offset;
     private Quaternion OffsetRotation=Quaternion.identity;
 
@@ -53,10 +55,28 @@ public class RerunCameraIdentifier : MonoBehaviour
                 var rotation = FollowTransform.rotation;
                 transform1.rotation = rotation * OffsetRotation;
                 transform1.position = FollowTransform.position + rotation * Offset;
-                
+
                 break;
-          
         }
+
+        if (AdjustableCamera)
+            {
+                
+                var transform2 = transform;
+                
+                if (Input.GetMouseButton(0) == true)
+                {
+                    // Get mouse input
+                    float mouseX = Input.GetAxis("Mouse X");
+                    float mouseY = -Input.GetAxis("Mouse Y");
+
+                    // Apply mouse with speed
+                    transform2.Translate(Vector3.left * m_FlySpeed * mouseX * Time.deltaTime);
+                    transform2.Translate(Vector3.up * m_FlySpeed * mouseY * Time.deltaTime);
+                }
+
+                transform2.Translate(Vector3.forward * m_FlySpeed * Input.mouseScrollDelta.y * Time.deltaTime);
+            }
         
        
     }
