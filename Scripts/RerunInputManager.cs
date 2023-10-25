@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Rerun
 {
+    [RequireComponent(typeof(RerunManager))]
     public class RerunInputManager : MonoBehaviour
     {
         private KeyCode m_LiveModeShortcut = KeyCode.L;

@@ -1,23 +1,30 @@
-﻿using UltimateReplay.Storage;
+﻿using System;
+using UltimateReplay.Storage;
 using UnityEngine;
 using UltimateReplay;
 using UltimateReplay.Storage;
+using Unity.Netcode;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 #if (UNITY_STANDALONE || UNITY_EDITOR)
-using SimpleFileBrowser;  //https://assetstore.unity.com/packages/tools/gui/runtime-file-browser-113006#description
+using SimpleFileBrowser; //https://assetstore.unity.com/packages/tools/gui/runtime-file-browser-113006#description
 #endif
 
 
-namespace Rerun
-{
+namespace Rerun {
     /// <summary>
     /// The main Rerun class.
     /// </summary>
-    [RequireComponent(typeof(RerunPlaybackCameraManager))]
-    public class RerunManager : MonoBehaviour
-    {
+    public class RerunManager : MonoBehaviour {
+        public enum StartUpMode {
+            RECORDING,
+            LIVE,
+            REPLAY
+        }
+
+        private StartUpMode m_StartupMode;
         private ReplayStorageTarget m_MemoryTarget = new ReplayMemoryTarget();
         private ReplayHandle m_RecordHandle = ReplayHandle.invalid;
         private ReplayHandle m_PlaybackHandle = ReplayHandle.invalid;
@@ -37,8 +44,6 @@ namespace Rerun
         // Set to true for now, but his could be exposed in editor for flexibility
         private bool m_RecordToFile = true;
 
-        [SerializeField] public bool _DontDestroyOnLoad = true;
-
         // String prefix for file name. Use inspector, or property to set programmatically
         // For example, use to store session ID, user name, scene name etc., in the file name
         // TODO - Store information like this in the recording itself, or JSON
@@ -49,8 +54,7 @@ namespace Rerun
         /// <summary>
         /// String prefix for filenames of recordings
         /// </summary>
-        public string recordingPrefix
-        {
+        public string recordingPrefix {
             get => m_RecordingPrefix;
             set => m_RecordingPrefix = value;
         }
@@ -68,46 +72,74 @@ namespace Rerun
 
         // Information about the active replay mode, name of file being recorded/played etc.
         private string m_InfoString;
-
+        private bool m_InitComplete;
 
         /// <summary>
         /// String containing information about the active replay mode, name of file being recorded/played etc.
         /// </summary>
-        public string infoString
-        {
+        public string infoString {
             get => m_InfoString;
         }
 
-        public void Awake()
-        {
-            // Find or create a replay manager
+
+        public void RerunInitialization(
+            bool _DontDestroyOnLoad,
+            RerunPlaybackCameraManager rpcm,
+            StartUpMode sum) {
+            if (_DontDestroyOnLoad) DontDestroyOnLoad(gameObject);
+
             ReplayManager.ForceAwake();
-            m_RerunPlaybackCameraManager = GetComponent<RerunPlaybackCameraManager>();
+
+            m_StartupMode = sum;
+
+            m_RerunPlaybackCameraManager = rpcm;
+
+            switch (m_StartupMode) {
+                case StartUpMode.RECORDING:
+                    GetComponent<RerunGUI>().enabled = false;
+                    GetComponent<RerunInputManager>().enabled = false;
+                    break;
+                case StartUpMode.LIVE:
+                    GetComponent<RerunGUI>().enabled = true;
+                    GetComponent<RerunInputManager>().enabled = true;
+                    break;
+                case StartUpMode.REPLAY:
+                    GetComponent<RerunGUI>().enabled = true;
+                    GetComponent<RerunInputManager>().enabled = true;
+                    break;
+            }
 
             m_InfoString = "";
-            if (_DontDestroyOnLoad) DontDestroyOnLoad(gameObject);
+            m_InitComplete = true;
+        }
+
+
+        private void NotInitError() {
+            Debug.LogError(
+                "Did not Init Rerun please do so befor calling any other method. The method is called ``RerunInitialization``!");
         }
 
         /// <summary>
         /// Enter Live mode.
         /// </summary>
-        public void Live()
-        {
+        public void Live() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             // If recording then do nothing (recording must be stopped first)
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
                 return;
             }
 
             // Stop all recording
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
                 StopRecording();
             }
 
             // Stop all playback
-            if (ReplayManager.IsReplaying(m_PlaybackHandle))
-            {
+            if (ReplayManager.IsReplaying(m_PlaybackHandle)) {
                 StopPlayback();
             }
 
@@ -120,15 +152,17 @@ namespace Rerun
         /// <summary>
         /// Toggles the recording state. Can be called from a single button used to start and stop recording.
         /// </summary>
-        public void ToggleRecording()
-        {
+        public void ToggleRecording() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             // Start a fresh recording
-            if (!ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (!ReplayManager.IsRecording(m_RecordHandle)) {
                 BeginRecording();
             }
-            else
-            {
+            else {
                 // Stop recording and begin playback
                 StopRecording();
                 Play();
@@ -138,27 +172,29 @@ namespace Rerun
         /// <summary>
         /// Enter Play mode. This will play back any recorded data, from file or memory.
         /// </summary>
-        public void Play()
-        {
+        public void Play() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             // If recording then do nothing (recording must be stopped first)
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
                 return;
             }
 
             StopPlayback();
-
-            m_RerunPlaybackCameraManager.EnableCameras();
+            if (m_RerunPlaybackCameraManager != null) {
+                m_RerunPlaybackCameraManager.EnableCameras();
+            }
 
             // Begin playback, based on target
-            if (m_RecordToFile)
-            {
+            if (m_RecordToFile) {
                 m_PlaybackHandle = ReplayManager.BeginPlayback(m_FileTarget, null, true);
                 string[] filePath = m_FileTarget.FilePath.Split('/');
                 m_InfoString = "Playing file: " + filePath[filePath.Length - 1];
             }
-            else
-            {
+            else {
                 m_PlaybackHandle = ReplayManager.BeginPlayback(m_MemoryTarget, null, true);
                 m_InfoString = "Playing from memory";
             }
@@ -173,13 +209,11 @@ namespace Rerun
 
         private preLoadDelegate handlers;
 
-        public void RegisterPreLoadHandler(preLoadDelegate del)
-        {
+        public void RegisterPreLoadHandler(preLoadDelegate del) {
             handlers += del;
         }
 
-        public void DeRegisterPreLoadHandler(preLoadDelegate del)
-        {
+        public void DeRegisterPreLoadHandler(preLoadDelegate del) {
             handlers -= del;
         }
 
@@ -187,22 +221,20 @@ namespace Rerun
         /// <summary>
         /// Open a file dialog to load .replay recordings. Starts playback immediately after opening.
         /// </summary>
-        public void Open()
-        {
-            // If recording then do nothing (recording must be stopped first)
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+        public void Open() {
+            if (!m_InitComplete) {
+                NotInitError();
                 return;
             }
-/* // Implementatio without using the file browser
-            #if UNITY_EDITOR
-            var filePath = EditorUtility.OpenFilePanel("Choose Input Event Trace to Load", string.Empty, "replay");
-            InternalOpenFile(filePath);
-*/
+
+            // If recording then do nothing (recording must be stopped first)
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
+                return;
+            }
 
 
 #if UNITY_STANDALONE || UNITY_EDITOR
-            FileBrowser.SetDefaultFilter( ".replay" );
+            FileBrowser.SetDefaultFilter(".replay");
             FileBrowser.ShowLoadDialog((paths) => { InternalOpenFile(paths[0]); },
                 () => { Debug.Log("Canceled file loading"); },
                 FileBrowser.PickMode.Files,
@@ -219,86 +251,100 @@ namespace Rerun
 #endif
         }
 
-        private void InternalOpenFile(string filePath)
-        {
-            if (handlers != null)
-            {
+        private void InternalOpenFile(string filePath) {
+            if (handlers != null) {
                 handlers.Invoke(filePath);
             }
 
 
             m_FileTarget = ReplayFileTarget.ReadReplayFile(filePath);
-           
+
             Play();
         }
 
-        public bool IsRecording()
-        {
+        public bool IsRecording() {
+            if (!m_InitComplete) {
+                NotInitError();
+            }
+
             return ReplayManager.IsRecording(m_RecordHandle);
         }
 
         /// <summary>
         /// Stop playback.
         /// </summary>
-        private void StopPlayback()
-        {
+        private void StopPlayback() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             // If recording then do nothing (recording must be stopped first)
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
                 return;
             }
 
             // If not playing then do nothing
-            if (!ReplayManager.IsReplaying(m_PlaybackHandle))
-            {
+            if (!ReplayManager.IsReplaying(m_PlaybackHandle)) {
                 return;
             }
 
             ReplayManager.StopPlayback(ref m_PlaybackHandle);
-            m_RerunPlaybackCameraManager.DisableCameras();
+          
+            if (m_RerunPlaybackCameraManager != null) {
+                m_RerunPlaybackCameraManager.DisableCameras();
+            }
         }
 
         /// <summary>
         /// Stop recording.
         /// </summary>
-        public void StopRecording()
-        {
-            // If not recording then do nothing
-            if (!ReplayManager.IsRecording(m_RecordHandle))
-            {
+        public void StopRecording() {
+            if (!m_InitComplete) {
+                NotInitError();
                 return;
             }
-           
+
+            // If not recording then do nothing
+            if (!ReplayManager.IsRecording(m_RecordHandle)) {
+                return;
+            }
+
             ReplayManager.StopRecording(ref m_RecordHandle);
-            Debug.Log("Stopped Recording with length: "+m_FileTarget.Duration);
+            Debug.Log("Stopped Recording with length: " + m_FileTarget.Duration);
             m_RigClone.gameObject.SetActive(true);
-            ReplayObject.CloneReplayObjectIdentity(m_RigSource, m_RigClone);
-            m_InfoString = "Live view";
+            if (m_StartupMode == StartUpMode.LIVE) {
+                ReplayObject.CloneReplayObjectIdentity(m_RigSource, m_RigClone);
+                m_InfoString = "Live view";
+            }
+            else {
+                m_InfoString = "Stopped Recording!";
+            }
         }
 
-        public void SetRecordingFolder(string val)
-        {
+        public void SetRecordingFolder(string val) {
             folderName = val;
         }
 
-        public string GetRecordingFolder()
-        {
+        public string GetRecordingFolder() {
             return folderName;
         }
 
-        public void BeginRecording(string Prefix)
-        {
+        public void BeginRecording(string Prefix) {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             m_RecordingPrefix = Prefix;
             BeginRecording();
         }
 
-        public string GetCurrentFolderPath()
-        {
+        public string GetCurrentFolderPath() {
             return Application.persistentDataPath + "/" + folderName + "/";
         }
-        
-        public string GetCurrentFilePath()
-        {
+
+        public string GetCurrentFilePath() {
             return LastRecordedFilePath;
         }
 
@@ -307,18 +353,20 @@ namespace Rerun
         /// <summary>
         /// Begin recording.
         /// </summary>
-        public void BeginRecording()
-        {
+        public void BeginRecording() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
             // If recording then do nothing (recording must be stopped first)
-            if (ReplayManager.IsRecording(m_RecordHandle))
-            {
+            if (ReplayManager.IsRecording(m_RecordHandle)) {
                 return;
             }
 
             StopPlayback();
 
-            if (m_RecordToFile)
-            {
+            if (m_RecordToFile) {
                 string fileName = m_RecordingPrefix + "_Rerun_" +
                                   System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
 
@@ -329,24 +377,51 @@ namespace Rerun
                 m_FileTarget = ReplayFileTarget.CreateReplayFile(path + fileName);
                 LastRecordedFilePath = m_FileTarget.FilePath;
                 Debug.Log("RecordingToFile" + path + fileName);
-                if (m_FileTarget.MemorySize > 0)
-                {
+
+                if (m_FileTarget.MemorySize > 0) {
                     m_FileTarget.PrepareTarget(ReplayTargetTask.Discard);
                 }
 
+
+                foreach (var r_obj in FindObjectsOfType<ReplayObject>()) {
+                    SceneManager.MoveGameObjectToScene(r_obj.gameObject,
+                        SceneManager.GetActiveScene());
+                }
+
                 m_RecordHandle = ReplayManager.BeginRecording(m_FileTarget, null, false, true);
+
                 m_InfoString = "Recording file: " + fileName;
             }
-            else
-            {
+            else {
                 // Clear old data
-                if (m_MemoryTarget.MemorySize > 0)
-                {
+                if (m_MemoryTarget.MemorySize > 0) {
                     m_MemoryTarget.PrepareTarget(ReplayTargetTask.Discard);
                 }
 
                 m_RecordHandle = ReplayManager.BeginRecording(m_MemoryTarget, null, false, true);
                 m_InfoString = "Recording into memory";
+            }
+        }
+
+        public void DisableAllReRunCameras() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
+            if (m_RerunPlaybackCameraManager != null) {
+                m_RerunPlaybackCameraManager.DisableCameras();
+            }
+        }
+
+        public void EnableAllReRunCameras() {
+            if (!m_InitComplete) {
+                NotInitError();
+                return;
+            }
+
+            if (m_RerunPlaybackCameraManager != null) {
+                m_RerunPlaybackCameraManager.EnableCameras();
             }
         }
     }

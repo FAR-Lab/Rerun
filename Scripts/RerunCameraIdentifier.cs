@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[RequireComponent(typeof(Camera))]
 public class RerunCameraIdentifier : MonoBehaviour
 {
     
@@ -14,18 +16,21 @@ public class RerunCameraIdentifier : MonoBehaviour
     public CameraNumber myNumber;
     
     // Start is called before the first frame update
-    void Start()
-    {
-   
+    void Start() {
+        m_Camera = GetComponent<Camera>();
+        m_AudioListener = GetComponent<AudioListener>();
     }
 
     
     private CameraFollowMode mode = CameraFollowMode.Other;
     public Transform FollowTransform;
-    public Boolean AdjustableCamera;
+    public bool AdjustableCamera;
     public float m_FlySpeed = 25;
     private Vector3 Offset;
     private Quaternion OffsetRotation=Quaternion.identity;
+
+    private Camera m_Camera;
+    private AudioListener m_AudioListener;
 
     public void SetFollowMode(Transform t, Vector3 off,Vector3 OffsetRotationEuler)
     {
@@ -91,6 +96,23 @@ public class RerunCameraIdentifier : MonoBehaviour
         Followmultiple,
         Fixed,
         Other
+    }
+
+    public void EnableCamera() {
+        m_Camera.enabled = true;
+        if(m_AudioListener!=null)
+        {
+            m_AudioListener.enabled = true;
+        }
+
+    }
+
+    public void DisableCamera() {
+        m_Camera.enabled = false;
+        if(m_AudioListener!=null)
+        {
+            m_AudioListener.enabled = false;
+        }
     }
     
   
