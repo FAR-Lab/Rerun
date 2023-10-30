@@ -384,8 +384,10 @@ namespace Rerun {
 
 
                 foreach (var r_obj in FindObjectsOfType<ReplayObject>()) {
-                    SceneManager.MoveGameObjectToScene(r_obj.gameObject,
-                        SceneManager.GetActiveScene());
+                    if (r_obj.transform.root.gameObject.scene!=SceneManager.GetActiveScene()) {
+                        SceneManager.MoveGameObjectToScene(r_obj.transform.root.gameObject,
+                            SceneManager.GetActiveScene());
+                    }
                 }
 
                 m_RecordHandle = ReplayManager.BeginRecording(m_FileTarget, null, false, true);
