@@ -470,8 +470,8 @@ GameObject:
   - component: {fileID: 4471618475864336879}
   - component: {fileID: 4471618475864336877}
   - component: {fileID: 4445708072372085909}
-  - component: {fileID: 3409649868172682829}
   - component: {fileID: 6914567035493773891}
+  - component: {fileID: 3409649868172682829}
   - component: {fileID: 6186350031610843627}
   - component: {fileID: 5671704704182205343}
   - component: {fileID: 7262219010177575821}
@@ -581,6 +581,26 @@ MonoBehaviour:
   m_CameraFloorOffsetObject: {fileID: 4471618474178979416}
   m_RequestedTrackingOriginMode: 1
   m_CameraYOffset: 0
+--- !u!114 &6914567035493773891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4471618475864336874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4120042596
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &3409649868172682829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,26 +631,6 @@ MonoBehaviour:
   InLocalSpace: 1
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &6914567035493773891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4471618475864336874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &6186350031610843627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,9 +643,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69da2be4efdf02441908e882bb9d204b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FollowRotation: 0
-  FollowLocation: 0
-  MyCamera: {fileID: 0}
   ButtonPushed:
     m_InternalValue: 0
   NetworkedInteractableObject: {fileID: 0}
