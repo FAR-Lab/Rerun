@@ -1,12 +1,11 @@
 ﻿using System;
+using System.IO;
 using UltimateReplay.Storage;
 using UnityEngine;
 using UltimateReplay;
-using UltimateReplay.Storage;
-using Unity.Netcode;
-using UnityEditor;
+
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+
 
 #if (UNITY_STANDALONE || UNITY_EDITOR)
 using SimpleFileBrowser; //https://assetstore.unity.com/packages/tools/gui/runtime-file-browser-113006#description
@@ -239,7 +238,7 @@ namespace Rerun {
                 () => { Debug.Log("Canceled file loading"); },
                 FileBrowser.PickMode.Files,
                 false,
-                Application.persistentDataPath,
+                DataStoragePathSupervisor.GetReRunDirectory(),
                 null,
                 "Select one ReRun file",
                 "Select");
@@ -339,21 +338,12 @@ namespace Rerun {
             m_RecordingPrefix = Prefix;
             BeginRecording();
         }
-
-        public string GetCurrentFolderPath() {
-            return Application.persistentDataPath + "/" + folderName + "/";
-        }
-
-        public string GetCurrentFilePath() {
-            return LastRecordedFilePath;
-        }
-
-        private string LastRecordedFilePath;
+        
 
         /// <summary>
         /// Begin recording.
         /// </summary>
-        public void BeginRecording() {
+        private void BeginRecording() {
             if (!m_InitComplete) {
                 NotInitError();
                 return;
@@ -368,14 +358,12 @@ namespace Rerun {
 
             if (m_RecordToFile) {
                 string fileName = m_RecordingPrefix + "_Rerun_" +
-                                  System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".replay";
+                                  DateTime.Now.ToString(DataStoragePathSupervisor.DateTimeFormatFolder) + ".replay";
 
 
-                string path = Application.persistentDataPath + "/" + folderName + "/";
-                System.IO.Directory.CreateDirectory(path);
+                string path = DataStoragePathSupervisor.GetReRunDirectory();
 
-                m_FileTarget = ReplayFileTarget.CreateReplayFile(path + fileName);
-                LastRecordedFilePath = m_FileTarget.FilePath;
+                m_FileTarget = ReplayFileTarget.CreateReplayFile(Path.Join(path , fileName));
                 Debug.Log("RecordingToFile" + path + fileName);
 
                 if (m_FileTarget.MemorySize > 0) {

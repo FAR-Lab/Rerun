@@ -40,7 +40,7 @@ namespace Rerun
             
             if (IsReplayKeyPressed(KeyCode.K))
             {
-                m_RerunManager.BeginRecording();
+                m_RerunManager.BeginRecording("Standa0lone");
             }
             if (IsReplayKeyPressed(KeyCode.J))
             {
