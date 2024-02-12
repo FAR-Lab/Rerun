@@ -46,7 +46,7 @@ namespace Rerun
             // Find or create a replay manager
             ReplayManager.ForceAwake();
             m_RerunManager = GetComponent<RerunManager>();
-            
+            enabled = false;
         }
 
         public void Start()
