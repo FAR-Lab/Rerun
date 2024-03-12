@@ -93,7 +93,7 @@ public class RerunCameraIdentifier : MonoBehaviour
     public enum CameraFollowMode
     {
         Followone,
-        Followmultiple,
+        Followmultiple, 
         Fixed,
         Other
     }
